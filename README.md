@@ -4,12 +4,6 @@
 
 - ## Configuration
 
-```kotlin
-repository { mavenCentral() }
-
-implementation("com.kotlincrow.android.component:AttrTextLayout:1.9")
-```
-
 - ## Function
 - [x] Supports configuration of text strategy, style, line wrapping (manual, automatic), special effects (erase, move, circular, continuous, non-continuous) animation
 - [x] Supports XML and dynamic creation
