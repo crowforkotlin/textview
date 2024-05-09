@@ -9,6 +9,7 @@
     tools:ignore="PxUsage">
 
     <com.crow.attr.text.AttrTextLayout
+        android:id="@+id/text"
         android:layout_width="128px"
         android:layout_height="64px"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -17,8 +18,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:singleTextAnimationEnable="true"
-        app:text="1234567\n2048666\n789789qweyuioooi\nzxcbnmbqeggg"
-        app:textAnimationMode="move_x_high_brush_draw"
+        app:text="1\n2\n3"
+        app:textAnimationMode="immediate"
         app:textAnimationSpeed="8"
         app:textFrameLineWidth="5px"
         app:textFrameLeft="true"
@@ -26,7 +27,7 @@
         app:textFrameBottom="true"
         app:textFrameTop="true"
         app:textFrameColor="@android:color/holo_red_light"
-        app:textAnimationStrategy="continua"
+        app:textAnimationStrategy="restart"
         app:textAnimationX="left"
         app:textAnimationY="top"
         app:textAntiAliasEnable="false"
@@ -34,18 +35,16 @@
         app:textCharSpacing="1sp"
         app:textColor="@color/white"
         app:textFakeBoldEnable="false"
-        app:textFontAbsolutePath="/data/data/com.crow.attrtextlayout/files/font/calibri.ttf"
-        app:textFontAssetsPath="comic.ttf"
         app:textGravity="center"
         app:textItalicEnable="false"
         app:textLines="2"
         app:textMonoSpaceEnable="true"
         app:textMultipleLineEnable="true"
-        app:textResidenceTime="0"
+        app:textResidenceTime="5000"
         app:textRowMargin="1sp"
         app:textSize="12sp"
         app:textSizeUnitStrategy="defaultOrSp"
-        app:textUpdateStrategy="lazy" />
+        app:textUpdateStrategy="current" />
 
     <!--<androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

@@ -1782,27 +1782,27 @@ class AttrTextLayout : FrameLayout, IAttrText {
      */
     private fun initPaintTypeFace(textPaint: TextPaint) {
         val value = when {
+            mTextMonoSpaceEnable -> {
+                textPaint.typeface = Typeface.MONOSPACE
+                return
+            }
             mTextBoldEnable && mTextItalicEnable -> Typeface.BOLD_ITALIC
             mTextBoldEnable -> Typeface.BOLD
             mTextItalicEnable -> Typeface.ITALIC
-            else -> {
-                textPaint.typeface = if (mTextMonoSpaceEnable) Typeface.MONOSPACE else Typeface.DEFAULT
-                null
-            }
+            else -> Typeface.NORMAL
         }
 
         val typeface = runCatching {
             when {
                 mTextFontAssetsPath != null -> createTypefaceFromAssets(value)
                 mTextFontAbsolutePath != null -> createTypefaceFromFile(value)
-                else -> if (value == null) mTypeface else Typeface.create(mTypeface, value)
+                else -> if(mTypeface != null) Typeface.create(mTypeface, value) else Typeface.create(Typeface.DEFAULT, value)
             }
         }.getOrElse { cause ->
             cause.stackTraceToString().debugLog(level = Log.ERROR)
             Typeface.create(if (mTextMonoSpaceEnable) Typeface.MONOSPACE else Typeface.DEFAULT, value ?: return)
         }
 
-        mTypeface = typeface
         mTextPaint.typeface = typeface
     }
     private fun createTypefaceFromAssets(value: Int?): Typeface {

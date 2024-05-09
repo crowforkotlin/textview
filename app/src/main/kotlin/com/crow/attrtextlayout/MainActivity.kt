@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity() {
                 copyFolder("font")
                 mContent = File(filesDir, "content/Content.txt").readText()
             }
+            delay(4500)
+            mBinding.text.mText = "4\n5\n6\n7\n8\n9"
 //            mBinding.attrTextLayout.mText = mContent
             /*withContext(Dispatchers.IO) {
                 repeat(Int.MAX_VALUE) {
@@ -61,6 +63,12 @@ class MainActivity : AppCompatActivity() {
                     mBottom = true, mLineWidth = (20..50).random().toFloat())
             }*/
             // createAttrTextLayout(128, FrameLayout.LayoutParams.WRAP_CONTENT, AttrTextLayout.ANIMATION_MOVE_Y)
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            repeat(Int.MAX_VALUE) {
+                delay(1)
+                mBinding.text.mText = "$it"
+            }
         }
     }
 
