@@ -1,7 +1,7 @@
 - # AttrTextLayout
 
 - ![Android Support Version](https://img.shields.io/badge/Android_Version-4.1.1+-blue) ![Compat](https://img.shields.io/badge/Compat-AndroidX_&_Support_Library-blue)
-- 
+
 - ## Function
 - [x] Supports configuration of text strategy, style, line wrapping (manual, automatic), special effects (erase, move, circular, continuous, non-continuous) animation
 - [x] Supports XML and dynamic creation
