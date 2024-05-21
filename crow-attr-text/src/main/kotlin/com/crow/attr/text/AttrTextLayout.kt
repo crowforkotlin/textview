@@ -786,12 +786,13 @@ class AttrTextLayout : FrameLayout, IAttrText {
         super.dispatchDraw(canvas)
         mTextFrameConfig?.let { frame ->
             val widthFloat = measuredWidth - 1f
-            val heightFloat = measuredHeight - 1f
+            val heightFloat = measuredHeight.toFloat()
+            val heightY= heightFloat - 1
             val zero = 0f
             if (frame.mLeft) canvas.drawLine(zero, zero, zero, heightFloat, frame.mPaint)
             if (frame.mTop) canvas.drawLine(zero, zero, widthFloat, zero, frame.mPaint)
             if (frame.mRight) canvas.drawLine(widthFloat, zero, widthFloat, heightFloat, frame.mPaint)
-            if (frame.mBottom) canvas.drawLine(zero, heightFloat, widthFloat, heightFloat, frame.mPaint)
+            if (frame.mBottom) canvas.drawLine(zero, heightY, widthFloat, heightY, frame.mPaint)
         }
     }
 
