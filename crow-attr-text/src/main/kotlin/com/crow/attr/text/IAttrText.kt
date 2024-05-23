@@ -43,7 +43,6 @@ internal interface IAttrText {
     var mTextAnimationLeftEnable: Boolean
     var mTextAnimationMode: Short
     var mTextRowMargin: Float
-    var mTextSizeUnitStrategy: Short
 
     /**
      * ⦁ 获取文本高度：ascent绝对值 + descent

@@ -137,10 +137,6 @@ class AttrTextLayout : FrameLayout, IAttrText {
                 in GRADIENT_BEVEL..GRADIENT_VERTICAL-> value.toByte()
                 else -> error("AttrTextLayout Get Unknow GradientDirection Value $value!")
             }
-            mTextSizeUnitStrategy = when(val value = getInt(R.styleable.AttrTextLayout_textSizeUnitStrategy, STRATEGY_DIMENSION_PX_OR_DEFAULT.toInt())) {
-                in STRATEGY_DIMENSION_PX_OR_DEFAULT..STRATEGY_DIMENSION_DP_OR_SP -> value.toShort()
-                else -> error("AttrTextLayout Get Unknow SizeUnitStrategy Value $value!")
-            }
             mTextAnimationMode = when(val value = getInt(R.styleable.AttrTextLayout_textAnimationMode, ANIMATION_DEFAULT.toInt())) {
                 in ANIMATION_DEFAULT..ANIMATION_MOVE_Y_HIGH_BRUSH_DRAW -> value.toShort()
                 else -> error("AttrTextLayout Get Unknow AnimationMode Value $value!")
@@ -691,14 +687,6 @@ class AttrTextLayout : FrameLayout, IAttrText {
      * @author crowforkotlin
      */
     override var mTextRowMargin: Float = 0f
-
-    /**
-     * ⦁ 当前尺寸大小策略 默认PX
-     *
-     * ⦁ 2023-12-26 11:37:20 周二 上午
-     * @author crowforkotlin
-     */
-    override var mTextSizeUnitStrategy: Short = STRATEGY_DIMENSION_PX_OR_DEFAULT
 
     /**
      * ⦁ 初始化画笔
@@ -1268,11 +1256,11 @@ class AttrTextLayout : FrameLayout, IAttrText {
             val duration: Long = with(MAX_SCROLL_SPEED - mTextAnimationSpeed) { if (this == 8) 0L else if (this == 1) 1L else toLong() shl 1 }
             var count = 0
             viewA.setHighBrushSuccessListener {
-                onHighBrushAnimationEnd(++count, animationMode, true, viewA, viewB, duration, isX)
+                onHighBrushAnimationEnd(++count, animationMode, true, viewA, viewB)
                 if (count == 2) count = 0
             }
             viewB.setHighBrushSuccessListener {
-                onHighBrushAnimationEnd(++count, animationMode, true, viewA, viewB, duration, isX)
+                onHighBrushAnimationEnd(++count, animationMode, true, viewA, viewB)
                 if (count == 2) count = 0
             }
             viewA.launchHighBrushDrawAnimation(isX, duration)
@@ -1286,7 +1274,7 @@ class AttrTextLayout : FrameLayout, IAttrText {
      * ⦁ 2024-03-26 15:06:42 周二 下午
      * @author crowforkotlin
      */
-    private fun onHighBrushAnimationEnd(count: Int, animationMode: Short, delay: Boolean, viewA: AttrTextView, viewB: AttrTextView, duration: Long, isX: Boolean) {
+    private fun onHighBrushAnimationEnd(count: Int, animationMode: Short, delay: Boolean, viewA: AttrTextView, viewB: AttrTextView) {
         if (count == 2) {
             if (mCacheViews.isEmpty()) return
             mTextResidenceTime.debugLog()
@@ -1735,7 +1723,6 @@ class AttrTextLayout : FrameLayout, IAttrText {
             mTextPaint.letterSpacing = mTextCharSpacing / mTextPaint.textSize
         }
         if (mTextAnimationMode !in ANIMATION_ERASE_X..ANIMATION_MOVE_Y_HIGH_BRUSH_DRAW) { view.mAnimationStartTime = 0 }
-        view.mTextSizeUnitStrategy = mTextSizeUnitStrategy
         view.mTextAnimationTopEnable = mTextAnimationTopEnable
         view.mTextAnimationLeftEnable = mTextAnimationLeftEnable
         view.mTextAnimationMode = mTextAnimationMode
@@ -1801,7 +1788,7 @@ class AttrTextLayout : FrameLayout, IAttrText {
             }
         }.getOrElse { cause ->
             cause.stackTraceToString().debugLog(level = Log.ERROR)
-            Typeface.create(if (mTextMonoSpaceEnable) Typeface.MONOSPACE else Typeface.DEFAULT, value ?: return)
+            Typeface.create(if (mTextMonoSpaceEnable) Typeface.MONOSPACE else Typeface.DEFAULT, value)
         }
 
         mTextPaint.typeface = typeface

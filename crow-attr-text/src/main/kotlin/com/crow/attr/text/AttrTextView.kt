@@ -7,6 +7,15 @@ package com.crow.attr.text
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Paint.FontMetrics
+import android.graphics.Path
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Region
+import android.os.Handler
+import android.text.TextPaint
+import android.view.View
 import com.crow.attr.text.AttrTextLayout.Companion.ANIMATION_CONTINUATION_CROSS_EXTENSION
 import com.crow.attr.text.AttrTextLayout.Companion.ANIMATION_CONTINUATION_ERASE_X
 import com.crow.attr.text.AttrTextLayout.Companion.ANIMATION_CONTINUATION_ERASE_Y
@@ -25,16 +34,6 @@ import com.crow.attr.text.AttrTextLayout.Companion.GRAVITY_CENTER_START
 import com.crow.attr.text.AttrTextLayout.Companion.GRAVITY_TOP_CENTER
 import com.crow.attr.text.AttrTextLayout.Companion.GRAVITY_TOP_END
 import com.crow.attr.text.AttrTextLayout.Companion.GRAVITY_TOP_START
-import com.crow.attr.text.AttrTextLayout.Companion.STRATEGY_DIMENSION_PX_OR_DEFAULT
-import android.graphics.Paint
-import android.graphics.Paint.FontMetrics
-import android.graphics.Path
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.Region
-import android.os.Handler
-import android.text.TextPaint
-import android.view.View
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.properties.Delegates
@@ -266,14 +265,6 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
      * @author crowforkotlin
      */
     override var mTextRowMargin: Float = 0f
-
-    /**
-     * ⦁ 当前尺寸大小策略 默认PX
-     *
-     * ⦁ 2023-12-26 11:37:20 周二 上午
-     * @author crowforkotlin
-     */
-    override var mTextSizeUnitStrategy: Short = STRATEGY_DIMENSION_PX_OR_DEFAULT
 
     /**
      * ⦁ 绘制文本
