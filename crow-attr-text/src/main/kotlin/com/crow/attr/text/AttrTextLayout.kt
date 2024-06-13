@@ -885,22 +885,12 @@ class AttrTextLayout : FrameLayout, IAttrText {
                 setBackgroundColor(mLayoutBackgroundColor)
             }
             FLAG_FONT_SIZE -> {
-                var fontSize: Float
-                val paintFontsize = withSizeUnit(pxOrDefault = {
-                    fontSize = mTextSize
-                    mTextPaint.textSize = mTextSize
-                    mTextPaint.textSize
-                }, dpOrSp = {
-                    fontSize = context.px2sp(mTextSize)
-                    mTextPaint.textSize = fontSize
-                    context.px2sp(mTextPaint.textSize)
-                })
                 val textHeight = context.getExactlyTextHeight(mTextPaint.fontMetrics)
                 val textWidth = mTextPaint.measureText("O")
                 if (textWidth > width || textHeight > height) {
                     "textsize is error $mTextSize \t textWidth is $textWidth \t textHeight is $textHeight \t width is $width \t height is $height".debugLog()
                 }
-                mTextPaint.textSize = paintFontsize
+                mTextPaint.textSize = mTextSize
             }
             FLAG_LAYER_TYPE -> {
                 post {
@@ -1256,11 +1246,11 @@ class AttrTextLayout : FrameLayout, IAttrText {
             val duration: Long = with(MAX_SCROLL_SPEED - mTextAnimationSpeed) { if (this == 8) 0L else if (this == 1) 1L else toLong() shl 1 }
             var count = 0
             viewA.setHighBrushSuccessListener {
-                onHighBrushAnimationEnd(++count, animationMode, true, viewA, viewB)
+                onHighBrushAnimationEnd(++count, animationMode, duration, true, viewA, viewB)
                 if (count == 2) count = 0
             }
             viewB.setHighBrushSuccessListener {
-                onHighBrushAnimationEnd(++count, animationMode, true, viewA, viewB)
+                onHighBrushAnimationEnd(++count, animationMode, duration, true, viewA, viewB,)
                 if (count == 2) count = 0
             }
             viewA.launchHighBrushDrawAnimation(isX, duration)
@@ -1274,10 +1264,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
      * ⦁ 2024-03-26 15:06:42 周二 下午
      * @author crowforkotlin
      */
-    private fun onHighBrushAnimationEnd(count: Int, animationMode: Short, delay: Boolean, viewA: AttrTextView, viewB: AttrTextView) {
+    private fun onHighBrushAnimationEnd(count: Int, animationMode: Short, duration: Long, delay: Boolean, viewA: AttrTextView, viewB: AttrTextView) {
         if (count == 2) {
             if (mCacheViews.isEmpty()) return
-            mTextResidenceTime.debugLog()
             if (mTextResidenceTime == 0L) {
                 viewA.mHighBrushJobRunning = true
                 viewB.mHighBrushJobRunning = true
@@ -1294,6 +1283,10 @@ class AttrTextLayout : FrameLayout, IAttrText {
                 updateTextListPosition()
                 viewA.invalidate()
                 viewB.invalidate()
+                if (mTextAnimationSpeed.toInt() != 8) {
+                    viewA.invalidateHighBrushAnimation(duration)
+                    viewB.invalidateHighBrushAnimation(duration)
+                }
                 return
             } else {
                 viewA.mHighBrushJobRunning = false
@@ -1726,7 +1719,7 @@ class AttrTextLayout : FrameLayout, IAttrText {
         view.mTextAnimationTopEnable = mTextAnimationTopEnable
         view.mTextAnimationLeftEnable = mTextAnimationLeftEnable
         view.mTextAnimationMode = mTextAnimationMode
-        view.mTextRowMargin = withSizeUnit(this::mTextRowMargin, dpOrSp = { context.px2dp(mTextRowMargin) })
+        view.mTextRowMargin = mTextRowMargin
         view.mTextLines = mTextLines
         view.mTextPaint = mTextPaint
     }
@@ -1752,7 +1745,7 @@ class AttrTextLayout : FrameLayout, IAttrText {
             }
             color = mTextColor
             isAntiAlias = mTextAntiAliasEnable
-            textSize = withSizeUnit(this@AttrTextLayout::mTextSize, dpOrSp = { context.px2sp(mTextSize) } )
+            textSize = mTextSize
             isFakeBoldText = mTextFakeBoldEnable
             textSkewX = if (mTextFakeItalicEnable) -0.25f else 0f
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -65,10 +65,6 @@
             <enum name="horizontal" value="11" />
             <enum name="vertical" value="12" />
         </attr>
-        <attr name="textSizeUnitStrategy" format="enum">
-            <enum name="defaultOrSp" value="604" />
-            <enum name="autoConvertDpOrSp" value="605" />
-        </attr>
         <attr name="textAnimationMode" format="enum">
             <enum name="immediate" value="300" />
             <enum name="move_x" value="301" />

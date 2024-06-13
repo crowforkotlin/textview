@@ -43,10 +43,6 @@ internal inline fun withApiO(leastO: () -> Unit, lessO: () -> Unit) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) leastO() else lessO()
 }
 
-internal inline fun IAttrText.withSizeUnit(pxOrDefault: () -> Float, dpOrSp: () -> Float): Float {
-    return if (mTextSizeUnitStrategy == AttrTextLayout.STRATEGY_DIMENSION_DP_OR_SP) dpOrSp() else pxOrDefault()
-}
-
 /**
  * ⦁ 错误输出
  *

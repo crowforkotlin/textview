@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity() {
                 copyFolder("font")
                 mContent = File(filesDir, "content/Content.txt").readText()
             }
-            delay(4500)
             mBinding.text.mText = "4\n5\n6\n7\n8\n9"
 //            mBinding.attrTextLayout.mText = mContent
             /*withContext(Dispatchers.IO) {
@@ -62,14 +61,14 @@ class MainActivity : AppCompatActivity() {
                     mRight = true,
                     mBottom = true, mLineWidth = (20..50).random().toFloat())
             }*/
-            // createAttrTextLayout(128, FrameLayout.LayoutParams.WRAP_CONTENT, AttrTextLayout.ANIMATION_MOVE_Y)
+//             createAttrTextLayout(128, FrameLayout.LayoutParams.WRAP_CONTENT, AttrTextLayout.ANIMATION_MOVE_X_HIGH_BRUSH_DRAW)
         }
-        lifecycleScope.launch(Dispatchers.IO) {
+       /* lifecycleScope.launch(Dispatchers.IO) {
             repeat(Int.MAX_VALUE) {
                 delay(1)
                 mBinding.text.mText = "$it"
             }
-        }
+        }*/
     }
 
     private fun onCreate() {
@@ -98,10 +97,9 @@ class MainActivity : AppCompatActivity() {
         layout.mTextSize = 14f
         layout.mTextGravity = AttrTextLayout.GRAVITY_BOTTOM_END
         layout.mTextGradientDirection = AttrTextLayout.GRADIENT_VERTICAL
-        layout.mTextSizeUnitStrategy = AttrTextLayout.STRATEGY_DIMENSION_PX_OR_DEFAULT
         layout.mSingleTextAnimationEnable = false
         layout.mTextMultipleLineEnable = true
-        layout.mTextResidenceTime = 1000
+        layout.mTextResidenceTime = 0
         layout.mTextAnimationMode = animationStrategy
         layout.mTextAnimationLeftEnable = false
         layout.mTextAnimationTopEnable = false
@@ -112,7 +110,6 @@ class MainActivity : AppCompatActivity() {
         layout.mTextFakeItalicEnable = false
         layout.mTextAntiAliasEnable = false
         layout.mTextItalicEnable = false
-        layout.mTextSizeUnitStrategy
         layout.mTextGradientDirection = AttrTextLayout.GRADIENT_BEVEL
         layout.mTextUpdateStrategy = AttrTextLayout.STRATEGY_TEXT_UPDATE_ALL
         layout.mTextAnimationStrategy = AttrTextLayout.STRATEGY_TEXT_UPDATE_CURRENT
@@ -122,12 +119,12 @@ class MainActivity : AppCompatActivity() {
         layout.mTextForceHardwareRenderEnable = false
         layout.mTextFrameConfig = AttrTextFrameConfig(mLeft = true, mTop = true, mRight = true, mBottom = true, mGradient = AttrTextLayout.GRADIENT_BEVEL)
         layout.mText = mContent
-        lifecycleScope.launch {
+        /*lifecycleScope.launch {
             repeat(10000) {
                 delay(1000)
                 layout.applyOption()
             }
-        }
+        }*/
         return layout
     }
 }
