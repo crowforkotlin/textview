@@ -626,6 +626,22 @@ class AttrTextLayout : FrameLayout, IAttrText {
     var mTextGradientDirection: Byte? = null
 
     /**
+     * ⦁ 删除线
+     *
+     * ⦁ 2024-06-15 18:30:03 周六 下午
+     * @author crowforkotlin
+     */
+//    var mTextDeleteLIne: Boolean = true
+
+    /**
+     * ⦁ 下划线
+     *
+     * ⦁ 2024-06-15 18:30:16 周六 下午
+     * @author crowforkotlin
+     */
+//    var mTextUnderLine: Boolean = true
+
+    /**
      * ⦁ 边框配置
      *
      * ⦁ 2024-03-12 16:10:21 周二 下午

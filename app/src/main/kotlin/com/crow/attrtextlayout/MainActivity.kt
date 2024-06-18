@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                 copyFolder("font")
                 mContent = File(filesDir, "content/Content.txt").readText()
             }
-            mBinding.text.mText = "4\n5\n6\n7\n8\n9"
+            mBinding.text.mText = "1234\n567\n678\n789\n890\n901"
 //            mBinding.attrTextLayout.mText = mContent
             /*withContext(Dispatchers.IO) {
                 repeat(Int.MAX_VALUE) {
