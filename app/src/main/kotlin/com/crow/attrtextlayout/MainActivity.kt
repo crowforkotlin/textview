@@ -41,7 +41,13 @@ class MainActivity : AppCompatActivity() {
                 copyFolder("font")
                 mContent = File(filesDir, "content/Content.txt").readText()
             }
-            mBinding.text.mText = "1234\n567\n678\n789\n890\n901"
+            lifecycleScope.launch {
+                delay(1000)
+                "update".log()
+//                mBinding.text.mText = "111111111111\n2222222222222\n33333333333\n789\n890\n901"
+                mBinding.text2.mText = ""
+//                mBinding.text3.mText = "111111111111\n2222222222222\n33333333333\n789\n890\n901"
+            }
 //            mBinding.attrTextLayout.mText = mContent
             /*withContext(Dispatchers.IO) {
                 repeat(Int.MAX_VALUE) {
@@ -111,8 +117,8 @@ class MainActivity : AppCompatActivity() {
         layout.mTextAntiAliasEnable = false
         layout.mTextItalicEnable = false
         layout.mTextGradientDirection = AttrTextLayout.GRADIENT_BEVEL
-        layout.mTextUpdateStrategy = AttrTextLayout.STRATEGY_TEXT_UPDATE_ALL
-        layout.mTextAnimationStrategy = AttrTextLayout.STRATEGY_TEXT_UPDATE_CURRENT
+        layout.mTextUpdateStrategy = AttrTextLayout.STRATEGY_TEXT_UPDATE_ALL_CONTINUE
+        layout.mTextAnimationStrategy = AttrTextLayout.STRATEGY_TEXT_UPDATE_CURRENT_CONTINUE
         layout.mTextRowMargin = 0f
         layout.mTextCharSpacing = 1f
         layout.mTextAnimationSpeed = 15

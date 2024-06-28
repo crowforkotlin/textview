@@ -65,6 +65,11 @@ class AttrTextLayout : FrameLayout, IAttrText {
                 viewA?.setLayerType(LAYER_TYPE_NONE, null)
                 viewB?.setLayerType(LAYER_TYPE_NONE, null)
             }
+            if (mTask?.contains(TASK_LAZY) == true && mAnimationDuration != 0L) {
+                mTask?.remove(TASK_LAZY)
+                onUpdateAttrTextViewPosition(updateAll = true)
+            }
+
             mAnimationUpdateListener?.onAnimationEnd(animation)
         }
         override fun onAnimationCancel(animation: Animator) {
@@ -106,7 +111,7 @@ class AttrTextLayout : FrameLayout, IAttrText {
                 mTop = getBoolean(R.styleable.AttrTextLayout_textFrameTop, false),
                 mRight = getBoolean(R.styleable.AttrTextLayout_textFrameRight, false),
                 mBottom = getBoolean(R.styleable.AttrTextLayout_textFrameBottom, false),
-                mLineWidth = getDimensionPixelOffset(R.styleable.AttrTextLayout_textFrameLineWidth, 1).toFloat(),
+                mLineWidth = getDimensionPixelOffset(R.styleable.AttrTextLayout_textFrameLineWidth, 0).toFloat(),
                 mColor = getColor(R.styleable.AttrTextLayout_textFrameColor, mTextColor),
                 mGradient = when(val value = getInt(R.styleable.AttrTextLayout_textGradientDirection, defaultValue)) {
                     0 -> null
@@ -125,7 +130,7 @@ class AttrTextLayout : FrameLayout, IAttrText {
             if (color != defaultValue) { mLayoutBackgroundColor = color }
             mTextColor = getColor(R.styleable.AttrTextLayout_textColor, mTextColor)
             mTextUpdateStrategy = when(val value = getInt(R.styleable.AttrTextLayout_textUpdateStrategy, STRATEGY_TEXT_UPDATE_LAZY.toInt())) {
-                in STRATEGY_TEXT_UPDATE_ALL..STRATEGY_TEXT_UPDATE_CURRENT -> value.toShort()
+                in STRATEGY_TEXT_UPDATE_ALL_CONTINUE..STRATEGY_TEXT_UPDATE_ALL_RESET -> value.toShort()
                 else -> error("AttrTextLayout Get Unknow Gravity Value $value!")
             }
             mTextGravity = when(val value = getInt(R.styleable.AttrTextLayout_textGravity, 1)) {
@@ -142,7 +147,7 @@ class AttrTextLayout : FrameLayout, IAttrText {
                 else -> error("AttrTextLayout Get Unknow AnimationMode Value $value!")
             }
             mTextAnimationStrategy = when(val value = getInt(R.styleable.AttrTextLayout_textAnimationStrategy, STRATEGY_ANIMATION_UPDATE_CONTINUA.toInt())) {
-                in STRATEGY_ANIMATION_UPDATE_RESTART..STRATEGY_ANIMATION_UPDATE_CONTINUA -> value.toShort()
+                in STRATEGY_ANIMATION_UPDATE_RESET..STRATEGY_ANIMATION_UPDATE_CONTINUA -> value.toShort()
                 else -> error("AttrTextLayout Get Unknow AnimationStrategy Value $value!")
             }
             onInitTextPaint()
@@ -182,6 +187,7 @@ class AttrTextLayout : FrameLayout, IAttrText {
         private const val FLAG_BACKGROUND_COLOR: Byte = 34
         private const val FLAG_FONT_SIZE: Byte = 35
         private const val FLAG_LAYER_TYPE: Byte = 36
+        private const val TASK_LAZY: Byte = 100
 
         const val ANIMATION_DEFAULT: Short = 300
         const val ANIMATION_MOVE_X: Short = 301
@@ -205,15 +211,15 @@ class AttrTextLayout : FrameLayout, IAttrText {
         const val ANIMATION_MOVE_Y_HIGH_BRUSH_DRAW: Short = 319
 
         /**
-         * ⦁ 重新加载更新策略：当重新绘制的时候是否重新执行动画
+         * ⦁ 重新加载更新策略：当重新绘制新文本的时候重新执行动画
          *
          * ⦁ 2023-11-06 16:02:52 周一 下午
          * @author crowforkotlin
          */
-        const val STRATEGY_ANIMATION_UPDATE_RESTART: Short = 602
+        const val STRATEGY_ANIMATION_UPDATE_RESET: Short = 602
 
         /**
-         * ⦁ 默认更新策略：当重新绘制的时候继续执行已停止的动画
+         * ⦁ 默认更新策略：当重新绘制新文本的时候继续执行动画 并不会重新执行
          *
          * ⦁ 2023-11-06 16:04:22 周一 下午
          * @author crowforkotlin
@@ -221,21 +227,12 @@ class AttrTextLayout : FrameLayout, IAttrText {
         const val STRATEGY_ANIMATION_UPDATE_CONTINUA: Short = 603
 
         /**
-         * ⦁ PX策略 和 DP策略
-         *
-         * ⦁ 2023-12-26 11:36:26 周二 上午
-         * @author crowforkotlin
-         */
-        const val STRATEGY_DIMENSION_PX_OR_DEFAULT: Short = 604
-        const val STRATEGY_DIMENSION_DP_OR_SP: Short = 605
-
-        /**
          * ⦁ 默认更新策略：当文本发生改变触发绘制需求时会直接更新绘制视图
          *
          * ⦁ 2023-10-31 14:09:24 周二 下午
          * @author crowforkotlin
          */
-        const val STRATEGY_TEXT_UPDATE_ALL: Short = 900
+        const val STRATEGY_TEXT_UPDATE_ALL_CONTINUE: Short = 900
 
         /**
          * ⦁ 懒加载更新策略：当文本发生改变时 视图正在执行动画则不会更新，否则更新所有视图
@@ -251,7 +248,10 @@ class AttrTextLayout : FrameLayout, IAttrText {
          * ⦁ 2024-01-26 17:19:40 周五 下午
          * @author crowforkotlin
          */
-        const val STRATEGY_TEXT_UPDATE_CURRENT: Short = 902
+        const val STRATEGY_TEXT_UPDATE_CURRENT_CONTINUE: Short = 902
+        const val STRATEGY_TEXT_UPDATE_CURRENT_RESET: Short = 903
+        const val STRATEGY_TEXT_UPDATE_LAZY_RESET: Short = 904
+        const val STRATEGY_TEXT_UPDATE_ALL_RESET: Short = 905
 
         /**
          * ⦁ TaskScope 单例 暂时预留 考虑到文本数据处理采用单一线程解析，最后交由View进行对于处理
@@ -543,7 +543,7 @@ class AttrTextLayout : FrameLayout, IAttrText {
      * ⦁ 2023-10-31 14:07:36 周二 下午
      * @author crowforkotlin
      */
-    var mTextUpdateStrategy : Short = STRATEGY_TEXT_UPDATE_ALL
+    var mTextUpdateStrategy : Short = STRATEGY_TEXT_UPDATE_ALL_CONTINUE
 
     /**
      * ⦁ 动画策略 详细可查看定义声明
@@ -711,6 +711,7 @@ class AttrTextLayout : FrameLayout, IAttrText {
      * @author crowforkotlin
      */
     init {
+
         /*
         * 这里一定要设置xfermode（源像素取代目标像素）
         * 否则使用Canvas绘制的动画例如子View实现的 就会导致clipRect的时候文字出现边角出现缺失
@@ -879,15 +880,26 @@ class AttrTextLayout : FrameLayout, IAttrText {
         // 根据FLAG 执行对于Logic
         when(flag) {
             FLAG_LAYOUT_REFRESH -> { onNotifyLayoutUpdate() }
-            FLAG_CHILD_REFRESH -> { onNotifyViewUpdate() }
+            FLAG_CHILD_REFRESH -> { onUpdateAttrTextViewPosition() }
             FLAG_TEXT -> {
                 post {
+                    if (mText.isEmpty()) {
+                        mList.clear()
+                        onUpdateAttrTextViewPosition(updateAll = true)
+                        for (view in mCacheViews) { view.invalidate() }
+                        return@post
+                    }
                     getTextLists(if (mText.length > MAX_STRING_LENGTH) { mText.substring(0, MAX_STRING_LENGTH) } else mText) {
                         if (!isAttachedToWindow) return@getTextLists
                         mList = it
                         if (mList.isEmpty()) return@getTextLists
                         onUpdatePosOrView()
-                        onNotifyLayoutUpdate()
+                        if (mTextAnimationStrategy == STRATEGY_ANIMATION_UPDATE_RESET) {
+                            mLastAnimation = -1
+                            onNotifyLayoutUpdate()
+                        } else {
+                            onNotifyLayoutUpdate()
+                        }
                     }
                 }
             }
@@ -923,7 +935,7 @@ class AttrTextLayout : FrameLayout, IAttrText {
      * @author crowforkotlin
      */
     private fun onUpdateIfResetAnimation() {
-        if (mTextAnimationStrategy == STRATEGY_ANIMATION_UPDATE_RESTART) {
+        if (mTextAnimationStrategy == STRATEGY_ANIMATION_UPDATE_RESET) {
             mLastAnimation = -1
             onNotifyLayoutUpdate(false)
         }
@@ -937,23 +949,100 @@ class AttrTextLayout : FrameLayout, IAttrText {
      */
     private fun onUpdatePosOrView(updateAll: Boolean = false, forceUpdate: Boolean = false) {
         val size = mList.size
-        when {
-            size <= if (mTextMultipleLineEnable) mMultipleLinePos else mListPosition -> {
-                mUpdateAll = mTextUpdateStrategy == STRATEGY_TEXT_UPDATE_ALL
-                if (mTextMultipleLineEnable) mMultipleLinePos = 0 else mListPosition = size - 1
+        // 第一优先对文本位置进行比对，如果位置大于等于列表则进行重置位置为0
+        if (size <= if (mTextMultipleLineEnable) mMultipleLinePos else mListPosition) {
+            mUpdateAll = when(mTextUpdateStrategy) {
+                STRATEGY_TEXT_UPDATE_ALL_RESET, STRATEGY_TEXT_UPDATE_CURRENT_RESET, STRATEGY_TEXT_UPDATE_LAZY_RESET -> true
+                else -> size == 1
             }
-            forceUpdate -> onNotifyViewUpdate(updateAll = updateAll)
-            mTextUpdateStrategy == STRATEGY_TEXT_UPDATE_CURRENT -> {
-                onNotifyViewUpdate(updateAll = false)
+            if (mTextMultipleLineEnable) mMultipleLinePos = 0 else mListPosition = size - 1
+        }
+        // 第二优先对是否强制更新标志进行处理
+        else if (forceUpdate) {
+            onUpdateAttrTextViewPosition(updateAll = updateAll)
+        }
+        else if(mTextAnimationMode == ANIMATION_DEFAULT) {
+            if (mViewAnimationRunnable == null) {
+                onUpdateAttrTextViewPosition(updateAll = true)
             }
-            mTextUpdateStrategy == STRATEGY_TEXT_UPDATE_LAZY && mTextAnimationMode in ANIMATION_MOVE_X_HIGH_BRUSH_DRAW..ANIMATION_MOVE_Y_HIGH_BRUSH_DRAW -> {
-                onNotifyViewUpdate(updateAll = false)
-            }
-            mTextUpdateStrategy == STRATEGY_TEXT_UPDATE_LAZY && (mViewAnimatorSet == null || mViewAnimatorSet?.isRunning == false) -> {
-                onNotifyViewUpdate(updateAll = true)
-            }
-            mTextUpdateStrategy == STRATEGY_TEXT_UPDATE_ALL || mTextAnimationMode == ANIMATION_DEFAULT-> {
-                onNotifyViewUpdate(updateAll = true)
+        }
+        // 第三优先针对文本和动画策略进行更新处理
+        else{
+            when(mTextUpdateStrategy) {
+                // 懒加载 - 动画结束后
+                STRATEGY_TEXT_UPDATE_LAZY -> {
+                    // 高刷仅针对当前视图进行更新
+                    if (mTextAnimationMode in ANIMATION_MOVE_X_HIGH_BRUSH_DRAW..ANIMATION_MOVE_Y_HIGH_BRUSH_DRAW) {
+                        if (!mCacheViews.first().mHighBrushJobRunning) {
+                            onUpdateAttrTextViewPosition(updateAll = false)
+                        } else {
+                            if (mTextAnimationStrategy != STRATEGY_ANIMATION_UPDATE_RESET) {
+                                addTask(TASK_LAZY)
+                            } else {
+                                onUpdateAttrTextViewPosition(updateAll = true)
+                            }
+                        }
+                    }
+                    // 或者正在处理高刷的动画没有运行才更新, 此时所有内容全部更新即可
+                    else if(mViewAnimatorSet == null || mViewAnimatorSet?.isRunning == false) {
+                        onUpdateAttrTextViewPosition(updateAll = true)
+                    } else {
+                        if (mAnimationDuration != 0L) {
+                            addTask(TASK_LAZY)
+                        }
+                    }
+                }
+                STRATEGY_TEXT_UPDATE_LAZY_RESET -> {
+                    // 高刷仅针对当前视图进行更新
+                    if (mTextAnimationMode in ANIMATION_MOVE_X_HIGH_BRUSH_DRAW..ANIMATION_MOVE_Y_HIGH_BRUSH_DRAW) {
+                        if (!mCacheViews.first().mHighBrushJobRunning) {
+                            onUpdateAttrTextViewPosition(updateAll = false)
+                        } else {
+                            if (mTextAnimationStrategy != STRATEGY_ANIMATION_UPDATE_RESET) {
+                                addTask(TASK_LAZY)
+                            } else {
+                                mUpdateAll = true
+                                if (mTextMultipleLineEnable) mMultipleLinePos = 0 else mListPosition = 0
+                            }
+                        }
+                    }
+                    // 或者正在处理高刷的动画没有运行才更新, 此时所有内容全部更新即可
+                    else if(mViewAnimatorSet == null || mViewAnimatorSet?.isRunning == false) {
+                        onUpdateAttrTextViewPosition(updateAll = true)
+                    } else {
+                        if (mAnimationDuration != 0L) {
+                            addTask(TASK_LAZY)
+                        }
+                    }
+                }
+                // 文本策略全部-连续/重设, 默认 都进行全部更新
+                STRATEGY_TEXT_UPDATE_ALL_CONTINUE, STRATEGY_TEXT_UPDATE_ALL_RESET  -> {
+                    onUpdateAttrTextViewPosition(updateAll = true)
+                }
+                // 文本策略仅当前视图，连续/重设
+                STRATEGY_TEXT_UPDATE_CURRENT_CONTINUE -> {
+                    // 高刷仅针对当前视图进行更新
+                    onUpdateAttrTextViewPosition(updateAll = false)
+                }
+                STRATEGY_TEXT_UPDATE_CURRENT_RESET -> {
+                    // 高刷仅针对当前视图进行更新
+                    if (mTextAnimationMode in ANIMATION_MOVE_X_HIGH_BRUSH_DRAW..ANIMATION_MOVE_Y_HIGH_BRUSH_DRAW) {
+                        if (!mCacheViews.first().mHighBrushJobRunning) {
+                            onUpdateAttrTextViewPosition(updateAll = false)
+                        } else {
+                            if (mTextAnimationStrategy != STRATEGY_ANIMATION_UPDATE_RESET) {
+                                if (mTextMultipleLineEnable) {
+                                    mMultipleLinePos = 0
+                                } else {
+                                    mListPosition = 0
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        onUpdateAttrTextViewPosition(updateAll = false)
+                    }
+                }
             }
         }
     }
@@ -1030,7 +1119,7 @@ class AttrTextLayout : FrameLayout, IAttrText {
      * ⦁ 2023-11-01 19:13:46 周三 下午
      * @author crowforkotlin
      */
-    private fun onNotifyViewUpdate(updateAll: Boolean = mUpdateAll) {
+    private fun onUpdateAttrTextViewPosition(updateAll: Boolean = mUpdateAll) {
         if (mList.isEmpty() || mCacheViews.isEmpty() || mCurrentViewPos > mCacheViews.size - 1) return
         val viewA = mCacheViews[mCurrentViewPos]
         val list : MutableList<Pair<String, Float>> = mList.toMutableList()
@@ -1076,7 +1165,7 @@ class AttrTextLayout : FrameLayout, IAttrText {
                     val textWidth = mTextPaint.measureText(char.toString(), 0, 1)
                     textStringWidth += textWidth
                     // 字符串宽度 < 测量宽度 假设宽度是 128  那么范围在 0 - 127 故用小于号而不是小于等于
-                    if (textStringWidth < viewMeasureWidth) {
+                    if (textStringWidth <= viewMeasureWidth) {
                         if (char == NEWLINE_CHAR_FLAG) {
                             textList.add(textStringBuilder.toString() to textStringWidth - textWidth)
                             textStringBuilder.clear()
@@ -1164,23 +1253,13 @@ class AttrTextLayout : FrameLayout, IAttrText {
         val animationMode = mTextAnimationMode
         if (mLastAnimation == animationMode) return
         else { mLastAnimation = animationMode }
-
-        cancelAnimator()
-        removeAnimationRunnable()
-        post {
+        mHandler?.post {
+            cancelAnimator()
+            removeAnimationRunnable()
             val viewA = mCacheViews[mCurrentViewPos]
             val viewB = getNextView(mCurrentViewPos)
-            // 哪怕if逻辑即使再多也不要直接赋值 避免造成重绘影响性能
-            if (viewA.alpha != 1f) viewA.alpha = 1f
-            if (viewA.scaleX != 1f) viewA.scaleX = 1f
-            if (viewA.scaleY != 1f) viewA.scaleY = 1f
-            if (viewA.translationX != 0f) viewA.translationX = 0f
-            if (viewA.translationY != 0f) viewA.translationY = 0f
-            if (viewB.alpha != 1f) viewB.alpha = 1f
-            if (viewB.scaleX != 1f) viewB.scaleX = 1f
-            if (viewB.scaleY != 1f) viewB.scaleY = 1f
-            if (viewB.translationX != 0f) viewB.translationX = 0f
-            if (viewB.translationY != 0f) viewB.translationY = 0f
+            if (viewA.mHighBrushJobRunning) { viewA.cancelHighBrushDrawAnimation() }
+            if (viewB.mHighBrushJobRunning) { viewB.cancelHighBrushDrawAnimation() }
             onInitAttrTextViewValue(viewA)
             onInitAttrTextViewValue(viewB)
             onLayoutAnimation(animationMode, isDelay, viewA, viewB)
@@ -1244,7 +1323,6 @@ class AttrTextLayout : FrameLayout, IAttrText {
     private fun launchHighBrushDrawAnimation(animationMode: Short, isX: Boolean) {
         mViewAnimationRunnable?.let { mHandler?.removeCallbacks(it) }
         mHandler?.postDelayed(Runnable {
-            "$mTextResidenceTime".debugLog()
             if (mCacheViews.isEmpty()) return@Runnable
             val viewA = mCacheViews[mCurrentViewPos]
             val viewB = getNextView(mCurrentViewPos)
@@ -1283,7 +1361,20 @@ class AttrTextLayout : FrameLayout, IAttrText {
     private fun onHighBrushAnimationEnd(count: Int, animationMode: Short, duration: Long, delay: Boolean, viewA: AttrTextView, viewB: AttrTextView) {
         if (count == 2) {
             if (mCacheViews.isEmpty()) return
+            // 如果是 0L 代表一直执行绘制，后续只能通过View的mHighBrushJobRunning获取是否正在运行
             if (mTextResidenceTime == 0L) {
+                if (mTask?.contains(TASK_LAZY) == true) {
+                    if (mTextUpdateStrategy == STRATEGY_TEXT_UPDATE_LAZY_RESET) {
+                        if (mTextMultipleLineEnable) {
+                            mMultipleLinePos = 0
+                        } else {
+                            mListPosition = 0
+                        }
+                    } else {
+                        onUpdateAttrTextViewPosition(updateAll = true)
+                    }
+                    mTask?.remove(TASK_LAZY)
+                }
                 viewA.mHighBrushJobRunning = true
                 viewB.mHighBrushJobRunning = true
                 mAnimationStartTime = System.currentTimeMillis()
@@ -1307,6 +1398,18 @@ class AttrTextLayout : FrameLayout, IAttrText {
             } else {
                 viewA.mHighBrushJobRunning = false
                 viewB.mHighBrushJobRunning = false
+            }
+            if (mTask?.contains(TASK_LAZY) == true) {
+                if (mTextUpdateStrategy == STRATEGY_TEXT_UPDATE_LAZY_RESET) {
+                    if (mTextMultipleLineEnable) {
+                        mMultipleLinePos = 0
+                    } else {
+                        mListPosition = 0
+                    }
+                } else {
+                    onUpdateAttrTextViewPosition(updateAll = true)
+                }
+                mTask?.remove(TASK_LAZY)
             }
             if (!mTextForceHardwareRenderEnable) {
                 viewA.setLayerType(LAYER_TYPE_NONE, null  )
@@ -1452,6 +1555,11 @@ class AttrTextLayout : FrameLayout, IAttrText {
                     override fun onAnimationEnd(animation: Animator) {
                         onLayoutAnimation(animationMode, true, viewA, viewB)
                         super.onAnimationEnd(animation)
+                    }
+                    override fun onAnimationCancel(animation: Animator) {
+                        viewA.translationX = 0f
+                        viewB.translationX = viewBStart
+                        super.onAnimationCancel(animation)
                     }
                 })
                 animatorSet.start()
@@ -1671,7 +1779,13 @@ class AttrTextLayout : FrameLayout, IAttrText {
             mCurrentViewPos --
         }
         if (mTextMultipleLineEnable) {
-            if (mMultipleLinePos == 0) {
+            if (mTextUpdateStrategy == STRATEGY_TEXT_UPDATE_ALL_RESET || mTextUpdateStrategy == STRATEGY_TEXT_UPDATE_CURRENT_RESET) {
+                mMultipleLinePos = 0
+            }
+            else if(mTextAnimationStrategy == STRATEGY_TEXT_UPDATE_LAZY || mTextAnimationStrategy == STRATEGY_ANIMATION_UPDATE_RESET) {
+                mMultipleLinePos = 0
+            }
+            else if (mMultipleLinePos == 0) {
                 val textMaxLine = getTextMaxLine()
                 val textListSize = mList.size
                 var textTotalCount: Int = textListSize / textMaxLine
@@ -1681,7 +1795,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
                 mMultipleLinePos --
             }
         } else {
-            if (mListPosition == 0) {
+            if (mTextUpdateStrategy == STRATEGY_TEXT_UPDATE_ALL_RESET) {
+                mListPosition = 0
+            } else if (mListPosition == 0) {
                 mListPosition = mList.size - 1
             } else {
                 mListPosition --
@@ -1707,6 +1823,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
      * @author crowforkotlin
      */
     private fun cancelAnimator() {
+        mViewAnimatorSet?.childAnimations.apply {
+            this?.forEach { it.cancel() }
+        }
         mViewAnimatorSet?.cancel()
         mViewAnimatorSet = null
     }

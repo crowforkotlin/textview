@@ -274,12 +274,13 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
      */
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
         // 文本列表长度
         val textListSize = mList.size
 
         // 列表为空
-        if (textListSize == 0) return
+        if (textListSize == 0){
+            return
+        }
 
         // 获取文本 -> 如果超出列表位置取最后一个
         val text = if (mListPosition !in 0 until textListSize) { mList.last() } else mList[mListPosition]
@@ -516,6 +517,7 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
                 if (duration == 0L) { invalidate() } else {
                     mHandler.post(object : Runnable {
                         override fun run() {
+                            if (!mHighBrushJobRunning) return
                             if (mTextAxisValue > -mHighBrushPixelCount) {
                                 invalidate()
                             } else {
@@ -537,6 +539,7 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
                 if (duration == 0L) invalidate() else {
                     mHandler.post(object : Runnable {
                         override fun run() {
+                            if (!mHighBrushJobRunning) return
                             if (mTextAxisValue < mHighBrushPixelCount) invalidate()
                             else {
                                 mHandler.removeCallbacks(this)
@@ -772,6 +775,12 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
         } else {
             launchHighBrushAnimation(measuredHeight, mTextAnimationTopEnable, duration)
         }
+    }
+    internal fun cancelHighBrushDrawAnimation() {
+        mTextAxisValue = 0f
+        mHighBrushJobRunning = false
+        mHandler.removeCallbacksAndMessages(null)
+        invalidate()
     }
     internal fun setHighBrushSuccessListener(listener: (AttrTextView) -> Unit) { mHighBrushSuccessListener = listener }
 }

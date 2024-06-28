@@ -32,13 +32,16 @@
             <enum name="right" value="1" />
         </attr>
         <attr name="textUpdateStrategy" fokrmat="enum">
-            <enum name="all" value="900" />
+            <enum name="all_reset" value="905" />
+            <enum name="all_continue" value="900" />
             <enum name="lazy" value="901" />
-            <enum name="current" value="902" />
+            <enum name="lazy_reset" value="904" />
+            <enum name="current_continue" value="902" />
+            <enum name="current_reset" value="903" />
         </attr>
         <attr name="textAnimationStrategy" fokrmat="enum">
             <enum name="continua" value="603" />
-            <enum name="restart" value="602" />
+            <enum name="reset" value="602" />
         </attr>
         <attr name="textAnimationY" format="enum">
             <enum name="top" value="0" />
