@@ -8,10 +8,10 @@ plugins {
 }
 
 android {
-    namespace = "com.crow.attr.text"
+    namespace = "com.crow.text"
     compileSdk = 34
     defaultConfig {
-        minSdk = 16
+        minSdk = 21
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
         setProperty("archivesBaseName", "AttrTextLayout-${properties["VERSION_NAME"]}")

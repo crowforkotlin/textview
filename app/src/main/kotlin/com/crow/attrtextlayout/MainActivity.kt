@@ -4,7 +4,9 @@ package com.crow.attrtextlayout
 
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.SyncStateContract.Helpers.update
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,15 +14,19 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.crow.attr.text.AttrTextFrameConfig
-import com.crow.attr.text.AttrTextLayout
+import com.crow.text.StaticTextView
 import com.crow.attrtextlayout.databinding.ActivityMainBinding
 import com.crow.base.tools.extensions.copyFolder
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.invoke
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.concurrent.Executors
+import kotlin.concurrent.thread
 
 
 @Suppress("SpellCheckingInspection")
@@ -35,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         onCreate()
 
+
+
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
                 copyFolder("content")
@@ -42,10 +50,8 @@ class MainActivity : AppCompatActivity() {
                 mContent = File(filesDir, "content/Content.txt").readText()
             }
             lifecycleScope.launch {
-                delay(1000)
-                "update".log()
 //                mBinding.text.mText = "111111111111\n2222222222222\n33333333333\n789\n890\n901"
-                mBinding.text2.mText = ""
+//                mBinding.text2.mText = ""
 //                mBinding.text3.mText = "111111111111\n2222222222222\n33333333333\n789\n890\n901"
             }
 //            mBinding.attrTextLayout.mText = mContent
@@ -69,12 +75,6 @@ class MainActivity : AppCompatActivity() {
             }*/
 //             createAttrTextLayout(128, FrameLayout.LayoutParams.WRAP_CONTENT, AttrTextLayout.ANIMATION_MOVE_X_HIGH_BRUSH_DRAW)
         }
-       /* lifecycleScope.launch(Dispatchers.IO) {
-            repeat(Int.MAX_VALUE) {
-                delay(1)
-                mBinding.text.mText = "$it"
-            }
-        }*/
     }
 
     private fun onCreate() {
@@ -95,42 +95,7 @@ class MainActivity : AppCompatActivity() {
         requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     }
 
-    private fun createAttrTextLayout(width: Int, height: Int, animationStrategy: Short): AttrTextLayout {
-        val layout = AttrTextLayout(this)
-        val layoutParams = FrameLayout.LayoutParams(width, height)
-        mBinding.root.addView(layout)
-        layout.layoutParams = layoutParams
-        layout.mTextSize = 14f
-        layout.mTextGravity = AttrTextLayout.GRAVITY_BOTTOM_END
-        layout.mTextGradientDirection = AttrTextLayout.GRADIENT_VERTICAL
-        layout.mSingleTextAnimationEnable = false
-        layout.mTextMultipleLineEnable = true
-        layout.mTextResidenceTime = 0
-        layout.mTextAnimationMode = animationStrategy
-        layout.mTextAnimationLeftEnable = false
-        layout.mTextAnimationTopEnable = false
-        layout.mTextLines = 3
-        layout.mTextMonoSpaceEnable = false
-        layout.mTextBoldEnable = false
-        layout.mTextFakeBoldEnable = false
-        layout.mTextFakeItalicEnable = false
-        layout.mTextAntiAliasEnable = false
-        layout.mTextItalicEnable = false
-        layout.mTextGradientDirection = AttrTextLayout.GRADIENT_BEVEL
-        layout.mTextUpdateStrategy = AttrTextLayout.STRATEGY_TEXT_UPDATE_ALL_CONTINUE
-        layout.mTextAnimationStrategy = AttrTextLayout.STRATEGY_TEXT_UPDATE_CURRENT_CONTINUE
-        layout.mTextRowMargin = 0f
-        layout.mTextCharSpacing = 1f
-        layout.mTextAnimationSpeed = 15
-        layout.mTextForceHardwareRenderEnable = false
-        layout.mTextFrameConfig = AttrTextFrameConfig(mLeft = true, mTop = true, mRight = true, mBottom = true, mGradient = AttrTextLayout.GRADIENT_BEVEL)
-        layout.mText = mContent
-        /*lifecycleScope.launch {
-            repeat(10000) {
-                delay(1000)
-                layout.applyOption()
-            }
-        }*/
-        return layout
+    private fun createAttrTextLayout(width: Int, height: Int, animationStrategy: Short) {
+TextView(this).setText("")
     }
 }

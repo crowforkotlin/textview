@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="AttrTextLayout">
+    <declare-styleable name="StaticTextView">
         <attr name="text" format="string" />
         <attr name="textForceHardwareRenderEnable" format="boolean" />
         <attr name="textBoldEnable" format="boolean" />
         <attr name="textFakeBoldEnable" format="boolean" />
         <attr name="textAntiAliasEnable" format="boolean" />
-        <attr name="textMonoSpaceEnable" format="boolean" />
+        <attr name="textDefaultMonoSpaceEnable" format="boolean" />
         <attr name="textMultipleLineEnable" format="boolean" />
         <attr name="singleTextAnimationEnable" format="boolean" />
         <attr name="textItalicEnable" format="boolean" />
@@ -34,10 +34,6 @@
         <attr name="textUpdateStrategy" fokrmat="enum">
             <enum name="all_reset" value="905" />
             <enum name="all_continue" value="900" />
-            <enum name="lazy" value="901" />
-            <enum name="lazy_reset" value="904" />
-            <enum name="current_continue" value="902" />
-            <enum name="current_reset" value="903" />
         </attr>
         <attr name="textAnimationStrategy" fokrmat="enum">
             <enum name="continua" value="603" />
@@ -72,6 +68,7 @@
             <enum name="immediate" value="300" />
             <enum name="move_x" value="301" />
             <enum name="move_y" value="302" />
+
             <enum name="fade" value="303" />
             <enum name="fade_sync" value="304" />
             <enum name="center" value="305" />
@@ -89,6 +86,7 @@
             <enum name="move_y_draw" value="317" />
             <enum name="move_x_high_brush_draw" value="318" />
             <enum name="move_y_high_brush_draw" value="319" />
+            <enum name="move_x_high_brush_draw_no_paging" value="320" />
         </attr>
 
     </declare-styleable>
