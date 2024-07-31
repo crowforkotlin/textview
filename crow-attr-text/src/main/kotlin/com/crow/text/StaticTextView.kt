@@ -646,16 +646,16 @@ class StaticTextView : View, Choreographer.FrameCallback {
             if (mTextAxisValue > highBrushPixelCount) {
                 if (mTextResidenceTime != 0L ) {
                     if (mTextAxisValue - pixelCount <= highBrushPixelCount) {
-                        updateViewAnimation(animationDuration) { mTextAxisValue = highBrushPixelCount.toFloat() }
+                        doFrameInvalidate(animationDuration) { mTextAxisValue = highBrushPixelCount.toFloat() }
                     } else {
-                        updateViewAnimation(animationDuration) { mTextAxisValue -= pixelCount }
+                        doFrameInvalidate(animationDuration) { mTextAxisValue -= pixelCount }
                     }
                 } else {
-                    updateViewAnimation(animationDuration) { mTextAxisValue -= pixelCount }
+                    doFrameInvalidate(animationDuration) { mTextAxisValue -= pixelCount }
                 }
             } else {
                 if (mHighBrushAnimationListener?.invoke() == false) {
-                    updateViewAnimation(animationDuration) {
+                    doFrameInvalidate(animationDuration) {
                         mTextAxisValue += (abs(highBrushPixelCount) - pixelCount)
                     }
                 }
@@ -664,16 +664,16 @@ class StaticTextView : View, Choreographer.FrameCallback {
             if (mTextAxisValue < highBrushPixelCount) {
                 if (mTextResidenceTime != 0L ) {
                     if (mTextAxisValue + pixelCount >= highBrushPixelCount) {
-                        updateViewAnimation(animationDuration) { mTextAxisValue = highBrushPixelCount.toFloat() }
+                        doFrameInvalidate(animationDuration) { mTextAxisValue = highBrushPixelCount.toFloat() }
                     } else {
-                        updateViewAnimation(animationDuration) { mTextAxisValue += pixelCount }
+                        doFrameInvalidate(animationDuration) { mTextAxisValue += pixelCount }
                     }
                 } else {
-                    updateViewAnimation(animationDuration) { mTextAxisValue += pixelCount }
+                    doFrameInvalidate(animationDuration) { mTextAxisValue += pixelCount }
                 }
             } else {
                 if (mHighBrushAnimationListener?.invoke() == false) {
-                    updateViewAnimation(animationDuration) {
+                    doFrameInvalidate(animationDuration) {
                         mTextAxisValue -= (abs(highBrushPixelCount) + pixelCount)
                     }
                 } else {
@@ -682,7 +682,14 @@ class StaticTextView : View, Choreographer.FrameCallback {
             }
         }
     }
-    private inline fun updateViewAnimation(animationDuration: Long, crossinline block: () -> Unit) {
+
+    /**
+     * ⦁ 更新每一帧的视图
+     *
+     * ⦁ 2024-07-15 16:50:27 周一 下午
+     * @author crowforkotlin
+     */
+    private inline fun doFrameInvalidate(animationDuration: Long, crossinline block: () -> Unit) {
         if (animationDuration == 0L) {
             block()
             invalidate()
@@ -693,6 +700,13 @@ class StaticTextView : View, Choreographer.FrameCallback {
             mChoreographer.postFrameCallbackDelayed(this, animationDuration)
         }
     }
+
+    /**
+     * ⦁ 启动动画
+     *
+     * ⦁ 2024-07-15 16:53:18 周一 下午
+     * @author crowforkotlin
+     */
     private fun launchAnimation(isAwait: Boolean = false) {
         if (isAwait) {
             mHandler?.removeMessages(MESSAGE_LAUNCH_ANIMATION)
@@ -706,7 +720,7 @@ class StaticTextView : View, Choreographer.FrameCallback {
                     }
                     _mText = mText
                     mIsAwait = false
-                    launchDrawAnimation()
+                    onDrawAnimation()
                 },
                 config = { what = MESSAGE_LAUNCH_ANIMATION },
                 mTextResidenceTime
@@ -720,10 +734,17 @@ class StaticTextView : View, Choreographer.FrameCallback {
             cancelAnimation()
             _mText = mText
             mIsAwait = false
-            launchDrawAnimation()
+            onDrawAnimation()
         }
     }
-    private fun launchDrawAnimation() {
+
+    /**
+     * ⦁  开始执行动画
+     *
+     * ⦁ 2024-07-15 16:54:34 周一 下午
+     * @author crowforkotlin
+     */
+    private fun onDrawAnimation() {
         runCatching {
             mTextAnimationIsRunning = true
             when(mTextAnimationMode) {
