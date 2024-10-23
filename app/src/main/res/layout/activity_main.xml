@@ -9,7 +9,7 @@
     tools:ignore="PxUsage">
 
 <!--        app:text="啊好呀你好呀asdasdasdasdad000000\n你好呀你好呀asdasdasdasdad000000\n你好呀你好呀asdasdasdasdad000000\n你好呀你好呀asdasdasdasdad000000"-->
-    <com.crow.text.StaticTextView
+    <com.crow.text.AttrTextView
         android:id="@+id/text"
         android:layout_width="128px"
         android:layout_height="32px"
@@ -24,7 +24,7 @@
         app:textSize="12px"
         app:textUpdateStrategy="all_continue" />
 
-<!--    <com.crow.attr.text.StaticTextView
+<!--    <com.crow.attr.text.AttrTextView
         android:layout_width="64px"
         android:layout_height="16px"
         app:text="你好呀！！！！"
@@ -37,7 +37,7 @@
         app:textSize="14px"
         app:textUpdateStrategy="all_reset" />
 
-    <com.crow.attr.text.StaticTextView
+    <com.crow.attr.text.AttrTextView
         android:layout_width="64px"
         android:layout_marginTop="48px"
         android:layout_height="16px"
@@ -50,7 +50,7 @@
         app:textSize="14px"
         app:textUpdateStrategy="all_reset" />
 
-    <com.crow.attr.text.StaticTextView
+    <com.crow.attr.text.AttrTextView
         android:layout_width="64px"
         android:layout_height="16px"
         app:text="你好呀！！！！"
@@ -63,7 +63,7 @@
         app:textSize="14px"
         app:textUpdateStrategy="all_reset" />
 
-    <com.crow.attr.text.StaticTextView
+    <com.crow.attr.text.AttrTextView
         android:layout_width="64px"
         android:layout_height="16px"
         android:layout_marginStart="64px"
@@ -77,7 +77,7 @@
         app:textSize="14px"
         app:textUpdateStrategy="all_reset" />
 
-    <com.crow.attr.text.StaticTextView
+    <com.crow.attr.text.AttrTextView
         android:layout_width="64px"
         android:layout_height="16px"
         android:layout_marginStart="64px"
@@ -91,7 +91,7 @@
         app:textSize="14px"
         app:textUpdateStrategy="all_reset" />
 
-    <com.crow.attr.text.StaticTextView
+    <com.crow.attr.text.AttrTextView
         android:layout_width="64px"
         android:layout_height="16px"
         app:text="你好呀！！！！"
@@ -105,7 +105,7 @@
         app:textSize="14px"
         app:textUpdateStrategy="all_reset" />
 
-    <com.crow.attr.text.StaticTextView
+    <com.crow.attr.text.AttrTextView
         android:layout_width="64px"
         android:layout_height="16px"
         app:text="你好呀！！！！"

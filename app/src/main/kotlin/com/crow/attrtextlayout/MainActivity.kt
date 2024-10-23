@@ -4,8 +4,6 @@ package com.crow.attrtextlayout
 
 import android.graphics.Color
 import android.os.Bundle
-import android.provider.SyncStateContract.Helpers.update
-import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
@@ -14,19 +12,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.crow.text.StaticTextView
 import com.crow.attrtextlayout.databinding.ActivityMainBinding
 import com.crow.base.tools.extensions.copyFolder
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.invoke
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.concurrent.Executors
-import kotlin.concurrent.thread
 
 
 @Suppress("SpellCheckingInspection")
@@ -34,8 +25,7 @@ class MainActivity : AppCompatActivity() {
 
     private val mBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var mContent: String = ""
-//    val mContent = "好吧我觉得有BUG-确定吗？？？？我觉得是肯定的！！qweiqx@%!xTIQNAQWENXOQWEM#&IA我阿斯顿维拉4i9992188nnaduqwuzxucqwbdq!@$@#@snajaiw"
-//    val mContent = "好吧我觉得有BUG-确定吗？？？？我觉得是肯定的！！qweiqx@%!xTIQNAQWENXOQWEM#&IA"
+//    val mContent = "在这个匆忙的世界里，我们常常会迷失在日复一日的繁琐之中。每个人都有梦想，但通向梦想的道路总是充满了荆棘与坎坷。正如泰戈尔所言，“天空不曾留下鸟的痕迹，但我已飞过。”我们也许无法在每一次尝试中都取得成功，但每一次努力都会留下印记，成就我们独特的经历和故事。或许，当我们回首过去，会发现那些最艰难的时刻，正是我们最值得珍藏的记忆。坚持梦想，不忘初心，终有一天，我们会到达心中的彼岸。"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,9 +40,7 @@ class MainActivity : AppCompatActivity() {
                 mContent = File(filesDir, "content/Content.txt").readText()
             }
             lifecycleScope.launch {
-//                mBinding.text.mText = "111111111111\n2222222222222\n33333333333\n789\n890\n901"
-//                mBinding.text2.mText = ""
-//                mBinding.text3.mText = "111111111111\n2222222222222\n33333333333\n789\n890\n901"
+//                mBinding.text.mText = "aaaaaaaaaaaaa\nbbbbbbbbbbbbbb\ncccccccccccccc\n123\n456\n789"
             }
 //            mBinding.attrTextLayout.mText = mContent
             /*withContext(Dispatchers.IO) {
@@ -96,6 +84,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createAttrTextLayout(width: Int, height: Int, animationStrategy: Short) {
-TextView(this).setText("")
+        TextView(this).setText("")
     }
 }

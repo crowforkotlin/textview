@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="StaticTextView">
+    <declare-styleable name="AttrTextView">
         <attr name="text" format="string" />
         <attr name="textForceHardwareRenderEnable" format="boolean" />
         <attr name="textBoldEnable" format="boolean" />

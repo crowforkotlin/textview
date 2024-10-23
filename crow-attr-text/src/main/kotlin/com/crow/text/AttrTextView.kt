@@ -42,7 +42,7 @@ import kotlin.math.sqrt
  */
 
 /**
- * ⦁ 静态文本组件  V2.0   在此之前有一个新静态文本V1.0是 一个Layout + 两个View实现的性能比之前通用的静态文本高了但仍有不足，后来再次基础上
+ * ⦁ 属性文本组件  V2.0   在此之前有一个新属性文本V1.0是 一个Layout + 两个View实现的性能比之前通用的属性文本高了但仍有不足，后来再次基础上
  * 更近了V2.0 增加了"连续左右移动"（意思是：文本没有进行翻页、而是一行全都显示出来进行走字），当然你也可以切换其他特效从而开启翻页功能，例如默认的左右移动就是翻页
  * V2.0的开发周期较短，移除了V1.0的大量动画特效，在常量中定义我还没有删除，后续可自行在V2.0上扩展
  * V2.0的性能已经比OpenGL绘制的字幕性能高出了很多，并且不开特效最大取决于系统允许的app最大占用内存
@@ -57,60 +57,60 @@ import kotlin.math.sqrt
  * @author: crowforkotlin
  * @formatter:on
  */
-class StaticTextView : View, Choreographer.FrameCallback {
+class AttrTextView : View, Choreographer.FrameCallback {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) { initAttr(context, attrs) }
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int = 0) : super(context, attrs, defStyleAttr) { initAttr( context, attrs) }
     private fun initAttr(context: Context, attributeSet: AttributeSet?) {
 
         // 兼容在XML中直接创建组件
-        context.obtainStyledAttributes(attributeSet, R.styleable.StaticTextView).apply {
+        context.obtainStyledAttributes(attributeSet, R.styleable.AttrTextView).apply {
             val defaultValue = 0
-            mTextFontAbsolutePath = getString(R.styleable.StaticTextView_textFontAbsolutePath)
-            mTextFontAssetsPath = getString(R.styleable.StaticTextView_textFontAssetsPath)
-            mTextSize = getDimension(R.styleable.StaticTextView_textSize, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12f, context.resources.displayMetrics))
-            mTextBoldEnable = getBoolean(R.styleable.StaticTextView_textBoldEnable, false)
-            mTextFakeBoldEnable = getBoolean(R.styleable.StaticTextView_textFakeBoldEnable, false)
-            mTextItalicEnable = getBoolean(R.styleable.StaticTextView_textItalicEnable, false)
-            mTextFakeItalicEnable = getBoolean(R.styleable.StaticTextView_textFakeItalicEnable, false)
-            mTextAntiAliasEnable = getBoolean(R.styleable.StaticTextView_textAntiAliasEnable, false)
-            mTextDefaultMonoSpaceEnable = getBoolean(R.styleable.StaticTextView_textDefaultMonoSpaceEnable, false)
-            mTextMultipleLineEnable = getBoolean(R.styleable.StaticTextView_textMultipleLineEnable, false)
-            mSingleTextAnimationEnable = getBoolean(R.styleable.StaticTextView_singleTextAnimationEnable, false)
-            mTextAnimationSpeed = getInt(R.styleable.StaticTextView_textAnimationSpeed, defaultValue)
-            mTextRowMargin = getDimensionPixelOffset(R.styleable.StaticTextView_textRowMargin, defaultValue).toFloat()
-            mTextCharSpacing = getDimensionPixelOffset(R.styleable.StaticTextView_textCharSpacing, defaultValue).toFloat()
-            mTextResidenceTime = getInt(R.styleable.StaticTextView_textResidenceTime, defaultValue).toLong()
-            mTextAnimationLeftEnable = getInt(R.styleable.StaticTextView_textAnimationX, defaultValue) == defaultValue
-            mTextAnimationTopEnable = getInt(R.styleable.StaticTextView_textAnimationY, defaultValue) == defaultValue
-            mTextColor = getColor(R.styleable.StaticTextView_textColor, mTextColor)
-            mTextUpdateStrategy = when(val value = getInt(R.styleable.StaticTextView_textUpdateStrategy, STRATEGY_TEXT_UPDATE_ALL_RESET.toInt())) {
+            mTextFontAbsolutePath = getString(R.styleable.AttrTextView_textFontAbsolutePath)
+            mTextFontAssetsPath = getString(R.styleable.AttrTextView_textFontAssetsPath)
+            mTextSize = getDimension(R.styleable.AttrTextView_textSize, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12f, context.resources.displayMetrics))
+            mTextBoldEnable = getBoolean(R.styleable.AttrTextView_textBoldEnable, false)
+            mTextFakeBoldEnable = getBoolean(R.styleable.AttrTextView_textFakeBoldEnable, false)
+            mTextItalicEnable = getBoolean(R.styleable.AttrTextView_textItalicEnable, false)
+            mTextFakeItalicEnable = getBoolean(R.styleable.AttrTextView_textFakeItalicEnable, false)
+            mTextAntiAliasEnable = getBoolean(R.styleable.AttrTextView_textAntiAliasEnable, false)
+            mTextDefaultMonoSpaceEnable = getBoolean(R.styleable.AttrTextView_textDefaultMonoSpaceEnable, false)
+            mTextMultipleLineEnable = getBoolean(R.styleable.AttrTextView_textMultipleLineEnable, false)
+            mSingleTextAnimationEnable = getBoolean(R.styleable.AttrTextView_singleTextAnimationEnable, false)
+            mTextAnimationSpeed = getInt(R.styleable.AttrTextView_textAnimationSpeed, defaultValue)
+            mTextRowMargin = getDimensionPixelOffset(R.styleable.AttrTextView_textRowMargin, defaultValue).toFloat()
+            mTextCharSpacing = getDimensionPixelOffset(R.styleable.AttrTextView_textCharSpacing, defaultValue).toFloat()
+            mTextResidenceTime = getInt(R.styleable.AttrTextView_textResidenceTime, defaultValue).toLong()
+            mTextAnimationLeftEnable = getInt(R.styleable.AttrTextView_textAnimationX, defaultValue) == defaultValue
+            mTextAnimationTopEnable = getInt(R.styleable.AttrTextView_textAnimationY, defaultValue) == defaultValue
+            mTextColor = getColor(R.styleable.AttrTextView_textColor, mTextColor)
+            mTextUpdateStrategy = when(val value = getInt(R.styleable.AttrTextView_textUpdateStrategy, STRATEGY_TEXT_UPDATE_ALL_RESET.toInt())) {
                 in STRATEGY_TEXT_UPDATE_ALL_CONTINUE..STRATEGY_TEXT_UPDATE_ALL_RESET -> value.toShort()
-                else -> kotlin.error("StaticTextView Get Unknow Gravity Value $value!")
+                else -> kotlin.error("AttrTextView Get Unknow Gravity Value $value!")
             }
-            mTextGravity = when(val value = getInt(R.styleable.StaticTextView_textGravity, 1)) {
+            mTextGravity = when(val value = getInt(R.styleable.AttrTextView_textGravity, 1)) {
                 in GRAVITY_TOP_START..GRAVITY_BOTTOM_END -> value.toByte()
-                else -> kotlin.error("StaticTextView Get Unknow Gravity Value $value!")
+                else -> kotlin.error("AttrTextView Get Unknow Gravity Value $value!")
             }
-            mTextGradientDirection = when(val value = getInt(R.styleable.StaticTextView_textGradientDirection, defaultValue)) {
+            mTextGradientDirection = when(val value = getInt(R.styleable.AttrTextView_textGradientDirection, defaultValue)) {
                 0 -> null
                 in GRADIENT_BEVEL..GRADIENT_VERTICAL -> value.toByte()
-                else -> kotlin.error("StaticTextView Get Unknow GradientDirection Value $value!")
+                else -> kotlin.error("AttrTextView Get Unknow GradientDirection Value $value!")
             }
-            mTextAnimationMode = when(val value = getInt(R.styleable.StaticTextView_textAnimationMode, ANIMATION_DEFAULT.toInt())) {
+            mTextAnimationMode = when(val value = getInt(R.styleable.AttrTextView_textAnimationMode, ANIMATION_DEFAULT.toInt())) {
                 in ANIMATION_DEFAULT..ANIMATION_MOVE_X_HIGH_BRUSH_NO_PAGING_DRAW -> value.toShort()
-                else -> kotlin.error("StaticTextView Get Unknow AnimationMode Value $value!")
+                else -> kotlin.error("AttrTextView Get Unknow AnimationMode Value $value!")
             }
-            mTextAnimationStrategy = when(val value = getInt(R.styleable.StaticTextView_textAnimationStrategy, STRATEGY_ANIMATION_UPDATE_RESET.toInt())) {
+            mTextAnimationStrategy = when(val value = getInt(R.styleable.AttrTextView_textAnimationStrategy, STRATEGY_ANIMATION_UPDATE_RESET.toInt())) {
                 in STRATEGY_ANIMATION_UPDATE_RESET..STRATEGY_ANIMATION_UPDATE_CONTINUA -> value.toShort()
-                else -> kotlin.error("StaticTextView Get Unknow AnimationStrategy Value $value!")
+                else -> kotlin.error("AttrTextView Get Unknow AnimationStrategy Value $value!")
             }
             initTextPaint()
-            mTextGravity = when(val value = getInt(R.styleable.StaticTextView_textGravity, GRAVITY_TOP_START.toInt())) {
+            mTextGravity = when(val value = getInt(R.styleable.AttrTextView_textGravity, GRAVITY_TOP_START.toInt())) {
                 in GRAVITY_TOP_START..GRAVITY_BOTTOM_END -> value.toByte()
-                else -> kotlin.error("StaticTextView Get Unknow Gravity Value $value!")
+                else -> kotlin.error("AttrTextView Get Unknow Gravity Value $value!")
             }
-            val text = getString(R.styleable.StaticTextView_text)
+            val text = getString(R.styleable.AttrTextView_text)
             recycle()
             mText = text ?: return
         }
@@ -261,7 +261,7 @@ class StaticTextView : View, Choreographer.FrameCallback {
         // 考虑到如果绘制的文本内容特别多，采用了一个单独的全局线程来处理文本计算宽度
         if (mTaskHandlerThread == null) {
             // 单独利用一个全局的任务线程Handler
-            val thread = HandlerThread("StaticTextView_TaskSingletonThread").also { mTaskHandlerThread = it }
+            val thread = HandlerThread("AttrTextView_TaskSingletonThread").also { mTaskHandlerThread = it }
             thread.start()
             mTaskHandler = thread.looper.asHandler(true)
         }
