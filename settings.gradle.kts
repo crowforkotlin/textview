@@ -39,4 +39,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "AttrTextLayout"
 include(":app")
-include(":crow-attr-text")
+include(":textview")

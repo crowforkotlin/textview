@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":crow-attr-text"))
+    implementation(project(":textview"))
 //    implementation(libs.crow.attrTextLayout)
 //    implementation(files("/Users/crowforkotlin/AndroidStudioProjects/AttrTextLayout/crow-attr-text/component/AttrTextLayout-1.0.jar"))
     implementation(app.androidx.core.ktx)
